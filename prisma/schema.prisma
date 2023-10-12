@@ -2,19 +2,50 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model User {
+  id       Int      @id
+  injuries Injury[]
+}
 
-    @@index([name])
+model Injury {
+  id       Int             @id @default(autoincrement())
+  dateTime DateTime
+  details  Injurydetails[]
+  userId   Int
+  User     User            @relation(fields: [userId], references: [id])
+}
+
+model Injurydetails {
+  id       Int      @id @default(autoincrement())
+  bodypart BodyPart
+  label    Int
+  injury   Injury   @relation(fields: [injuryId], references: [id])
+  injuryId Int
+}
+
+enum BodyPart {
+  HEAD
+  NECK
+  SHOULDERS
+  LEFT_ARM
+  RIGHT_ARM
+  LEFT_HAND
+  RIGHT_HAND
+  CHEST
+  BACK
+  ABDOMEN
+  HIPS_PELVIS
+  LEFT_LEG
+  RIGHT_LEG
+  LEFT_FOOT
+  RIGHT_FOOT
+  OTHER
 }
